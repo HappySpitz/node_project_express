@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.customerRouter = void 0;
+const express_1 = require("express");
+const controllers_1 = require("../controllers");
+const middlewares_1 = require("../middlewares");
+const router = (0, express_1.Router)();
+router.get("/cars", controllers_1.carController.getAll);
+router.get("/cars/:carId", middlewares_1.commonMiddleware.isIdValid("carId"), middlewares_1.carMiddleware.getByIdOrThrow, controllers_1.carController.getById);
+router.get("/sellers/:userId", middlewares_1.commonMiddleware.isIdValid("userId"), middlewares_1.userMiddleware.getByIdOrThrow, controllers_1.sellerController.getById);
+exports.customerRouter = router;
