@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { Action, Seller, Token } from "../dataBase";
-import { EActionTokenType, ETypesSeller } from "../enums";
+import { EActionTokenType, ETokenType, ETypesSeller } from "../enums";
 import { ApiError } from "../errors";
 import { tokenService } from "../services";
 
@@ -57,15 +57,17 @@ class AuthMiddleware {
         throw new ApiError("No token!", 401);
       }
 
-      const jwtPayload = tokenService.checkToken(refreshToken);
+      const jwtPayload = tokenService.checkToken(
+          refreshToken,
+          ETokenType.refresh
+      );
 
       const tokenInfo = await Token.findOne({ refreshToken });
 
       if (!tokenInfo) {
         throw new ApiError("Token not valid!", 401);
       }
-
-      req.res.locals = { jwtPayload, tokenInfo };
+      req.res.locals = { tokenInfo, jwtPayload };
 
       next();
     } catch (e) {
